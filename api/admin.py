@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BA
-from .models import User, Categories, Post
+from .models import User, Categories, Post, Comment
 
 @admin.register(User)
 class Admin(BA):
@@ -13,3 +13,7 @@ class AdminCategotird(admin.ModelAdmin):
 @admin.register(Post)
 class AdminPost(admin.ModelAdmin):
     list_display = ['title', 'user', 'category', 'created_at', 'published']
+
+@admin.register(Comment)
+class AdminComment(admin.ModelAdmin):
+    list_display = ['post', 'user', 'comment', 'created_at']

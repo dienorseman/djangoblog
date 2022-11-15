@@ -3,11 +3,12 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
-from api.models import User, Categories, Post
-from api.permissions import IsAdminOrReadOnly
-from api.serializers import UserRegisterSerializer, UserSerializer, UserUpdateSerializer, CategoriesSerializer, PostSerializer
+from api.models import User, Categories, Post, Comment
+from api.permissions import IsAdminOrReadOnly, IsOwnerOrReadAndCreateOnly
+from api.serializers import UserRegisterSerializer, UserSerializer, UserUpdateSerializer, CategoriesSerializer, PostSerializer, CommentSerializer
 
 
 class RegisterView(APIView):
@@ -54,3 +55,11 @@ class PostViewset(ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['title', 'user', 'slug', 'category__title']
+
+class CommentViewset(ModelViewSet):
+    permission_classes = [IsOwnerOrReadAndCreateOnly]
+    serializer_class = CommentSerializer
+    queryset = Comment.objects.all()
+    filter_backends = [OrderingFilter, DjangoFilterBackend]
+    ordering = ['-created_at']
+    filterset_fields = ['post']
